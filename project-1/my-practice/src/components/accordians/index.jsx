@@ -3,10 +3,8 @@ import data from "./data";
 import './style.css';
 
 export default function Accordion() {
-  //single selection
+  
   const [selected, setSelected] = useState(null);
-
-  //multi selection
   const [enableMultiSelection , setenableMultiSelection] = useState(false);
   const [multiple , setMultiple] = useState([]);
 
@@ -14,19 +12,32 @@ export default function Accordion() {
     setSelected(getCurrentId === selected ? null : getCurrentId);
   }
 
-  function hhandleMultiSelection(getCurrentId){
+  function handleMultiSelection(getCurrentId){
+    let cpyMultiple = [...multiple];
+    const findIndexofCurrentId = cpyMultiple.indexOf(getCurrentId)
 
+    console.log(findIndexofCurrentId);
+    if(findIndexofCurrentId === -1) cpyMultiple.push(getCurrentId);
+      else  cpyMultiple.splice(findIndexofCurrentId, 1);
+
+    setMultiple(cpyMultiple);
   }
+  console.log(selected , multiple);
+
 
   return (
     <div className="wrapper">
-        <button onClick={setenableMultiSelection(!enableMultiSelection)}>Enable MultiSelection</button>
+        <button onClick={()=>setenableMultiSelection(!enableMultiSelection)}>Enable MultiSelection</button>
       <div className="accordion">
         {data && data.length > 0 ? (
           data.map((dataItem) => (
             <div className="item">
               <div
-                onClick={() => handleSingleSelection(dataItem?.id)}
+                onClick={
+                    enableMultiSelection
+                    ? () => handleMultiSelection(dataItem.id)
+                    : () => handleSingleSelection(dataItem.id)
+                }
                 className="title"
               >
                 <h3>{dataItem?.question}</h3>
